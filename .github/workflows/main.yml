@@ -1,45 +1,67 @@
-name: Build FivePlay APK
+
+name: FivePlay Android APK Builder
 
 on:
   workflow_dispatch:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - master
 
 permissions:
   contents: read
 
 jobs:
   build:
+    name: Build FivePlay APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      # Get source code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Java 17
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
+      # Android SDK
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android SDK packages
+      # Accept SDK licenses
+      - name: Accept Android Licenses
+        shell: bash
         run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+          yes | sdkmanager --licenses || true
 
+      # Install required SDK packages
+      - name: Install Android SDK 35
+        run: |
+          sdkmanager \
+            "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0"
+
+      # Install Gradle 8.9
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: Build APK
-        run: gradle --no-daemon assembleDebug
+      # Build APK
+      - name: Build Debug APK
+        run: |
+          gradle --no-daemon clean assembleDebug
 
-      - name: Upload APK
+      # Upload APK
+      - name: Upload FivePlay APK
         uses: actions/upload-artifact@v4
         with:
-          name: FivePlay-debug-APK
+          name: FivePlay-Android-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
