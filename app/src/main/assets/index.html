@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b12">
+<title>FivePlay Sandbox</title>
+<style>
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#080b12;color:#fff;font-family:system-ui,sans-serif}
+#app{position:fixed;inset:0;display:flex;flex-direction:column}
+header{min-height:42px;display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#111827}
+.brand{font-size:12px;font-weight:700}button{border:0;border-radius:8px;padding:8px 12px;background:#2563eb;color:#fff;font-weight:700}
+#game-wrap{flex:1;min-height:0}iframe{width:100%;height:100%;border:0;background:#000;display:block}
+#note{position:absolute;bottom:8px;left:8px;right:8px;text-align:center;font-size:11px;color:#cbd5e1;background:#111827dd;padding:6px;border-radius:6px;pointer-events:none}
+#app:fullscreen header{display:none}
+</style>
+</head>
+<body>
+<main id="app">
+<header><div class="brand">FIVEPLAY SANDBOX · LOCALHOST</div><button id="fs">Fullscreen</button></header>
+<section id="game-wrap">
+<iframe title="FivePlay Sandbox"
+src="https://v2.fiveplay.lol/game.html?mode=sandbox&amp;cfg=1_1-0.25_2-1_3-american_8-0_9-0_g-0_h-0_i-0_j-0_k-0_l-0_m-0_n-0_o-0_p-0_q-0_r-0_s-0_t-0_u-0_v-0_w-0_x-0_y-10_z-0_10-0_11-0_12-0_13-0_14-320x240"
+allow="fullscreen; autoplay; gamepad; pointer-lock; cross-origin-isolated"
+allowfullscreen referrerpolicy="strict-origin-when-cross-origin"
+sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms allow-fullscreen"></iframe>
+<div id="note">Popup restrictions enabled. In-game ads may still appear; use Android Private DNS for additional filtering.</div>
+</section>
+</main>
+<script>
+const app=document.getElementById('app'),fs=document.getElementById('fs');
+fs.addEventListener('click',async()=>{try{if(!document.fullscreenElement)await app.requestFullscreen();else await document.exitFullscreen()}catch(e){}});
+document.addEventListener('fullscreenchange',()=>fs.textContent=document.fullscreenElement?'Exit fullscreen':'Fullscreen');
+setTimeout(()=>document.getElementById('note').remove(),10000);
+</script>
+</body>
+</html>
